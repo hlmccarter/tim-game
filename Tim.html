@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Things Tim Will Do to Make Flag</title>
+    <style>
+        :root {
+            --cg-blue: #003666;
+            --cg-red: #E03C31;
+            --gold: #D4AF37;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #f0f4f8, #e1e8f0, #d0dbe5, #f0f4f8);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow-x: hidden;
+            color: #333;
+        }
+
+        header {
+            background-color: var(--cg-blue);
+            color: white;
+            padding: 20px;
+            border-bottom: 8px solid var(--cg-red);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .subtitle {
+            color: var(--gold);
+            font-style: italic;
+            margin-top: 5px;
+            animation: fadeIn 1.5s ease-in;
+        }
+
+        .scoreboard {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: var(--cg-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-bar {
+            width: 80%;
+            height: 35px;
+            background-color: #ddd;
+            margin: 0 auto 30px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 4px solid var(--cg-blue);
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cg-red), var(--gold), #28a745);
+            background-size: 200% 200%;
+            animation: shimmer 2s linear infinite;
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .category-title {
+            font-size: 1.8em;
+            color: var(--cg-blue);
+            border-bottom: 3px solid var(--gold);
+            display: inline-block;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+        }
+
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            width: 260px;
+            padding: 25px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+            animation: wobble 0.5s ease-in-out;
+        }
+
+        .card:active {
+            transform: scale(0.9);
+        }
+
+        .card-emoji {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-emoji {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        .log-container {
+            margin: 40px auto;
+            width: 80%;
+            max-width: 800px;
+            background: white;
+            border: 3px solid var(--cg-blue);
+            border-radius: 12px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .log-entry {
+            padding: 10px;
+            border-bottom: 1px dashed #ccc;
+            animation: slideInRight 0.4s ease-out forwards;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .log-entry:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .win-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 54, 102, 0.98);
+            color: var(--gold);
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1s;
+        }
+
+        .win-screen h2 {
+            font-size: 5em;
+            margin: 0;
+            text-shadow: 0 0 30px var(--gold);
+            animation: pulse 1s infinite alternate, spinSlow 10s linear infinite;
+        }
+
+        .win-screen p {
+            font-size: 1.8em;
+            color: white;
+            max-width: 800px;
+            line-height: 1.5;
+        }
+
+        .restart-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background-color: var(--cg-red);
+            color: white;
+            border: 4px solid transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .restart-btn:hover {
+            background-color: transparent;
+            border-color: var(--cg-red);
+            color: var(--cg-red);
+            transform: scale(1.1);
+        }
+
+        /* Animations */
+        .floating-reaction {
+            position: fixed;
+            font-size: 2.5em;
+            pointer-events: none;
+            z-index: 999;
+            animation: floatUpAndFade 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .clicked-card {
+            animation: clickSpin 0.6s ease-in-out forwards !important;
+            pointer-events: none;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: translateY(-10px) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-3deg); }
+            75% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        @keyframes clickSpin {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes floatUpAndFade {
+            0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+            50% { transform: translate(-50%, -100px) scale(1.5); }
+            100% { opacity: 0; transform: translate(-50%, -200px) scale(1); }
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Things Tim Will Do to Make Flag</h1>
+        <div class="subtitle">A classified simulation of extreme careerism</div>
+    </header>
+
+    <div class="scoreboard" id="scoreDisplay">Promotion Board Favorability</div>
+    
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="container" id="gameBoard">
+        <!-- Categories generated by JS -->
+    </div>
+
+    <div class="log-container" id="activityLog">
+        <div class="log-entry" style="opacity: 1; transform: translateX(0);"><em>FITREP cycle initiated. Awaiting brown-nosing maneuvers...</em></div>
+    </div>
+
+    <div class="win-screen" id="winScreen">
+        <h2>⭐ O-7 ⭐</h2>
+        <p><strong>PROMOTED TO REAR ADMIRAL (LOWER HALF)!</strong></p>
+        <p>Your golf handicap has been scrubbed, your coffee is officially "excellent," and nobody will ever tell you when your ideas are terrible again.</p>
+        <button class="restart-btn" onclick="resetGame()">Start New Command</button>
+    </div>
+
+    <script>
+        let score = 0;
+        const targetScore = 100;
+
+        // Categories with hidden points
+        const actionCategories = [
+            {
+                name: "The Pentagon Pivot (Staff Work)",
+                actions: [
+                    { id: 1, text: "Align every PowerPoint bullet perfectly at 0300", points: 15, emoji: "💻" },
+                    { id: 2, text: "Write a 400-page doctrine on the proper wear of the Boonie Hat", points: 20, emoji: "📘" },
+                    { id: 3, text: "Reply-All to a Coast Guard-wide email with 'I concur, Sir.'", points: 10, emoji: "📧" },
+                    { id: 4, text: "Create an acronym that is an acronym for another acronym", points: 18, emoji: "🔠" }
+                ]
+            },
+            {
+                name: "Mess Deck Diplomacy",
+                actions: [
+                    { id: 5, text: "Wash everyone's crusty coffee mugs in the Flag Mess", points: 25, emoji: "☕" },
+                    { id: 6, text: "Enthusiastically eat the cutter's questionable Mystery Meat Tuesday", points: 12, emoji: "🥩" },
+                    { id: 7, text: "Pretend the XO's burned coffee is a 'bold artisanal roast'", points: 15, emoji: "🤢" }
+                ]
+            },
+            {
+                name: "Optics & Schmoozing",
+                actions: [
+                    { id: 8, text: "Buy a $60,000 sailboat just to casually mention it to the board", points: 30, emoji: "⛵" },
+                    { id: 9, text: "Lose exactly by 1 stroke to the Admiral in a golf match", points: 35, emoji: "⛳" },
+                    { id: 10, text: "Laugh hysterically at the boss's terrible maritime pun", points: 10, emoji: "🤣" }
+                ]
+            },
+            {
+                name: "Enlisted Torment (Mandatory Fun)",
+                actions: [
+                    { id: 11, text: "Organize a 'Mandatory Fun' 5K at 0500 in sleeting rain", points: 20, emoji: "🏃‍♂️" },
+                    { id: 12, text: "Aggressively enforce mustache regulations with a micrometer", points: 15, emoji: "👨🏻" },
+                    { id: 13, text: "Schedule an all-hands field day right before Friday liberty call", points: 25, emoji: "🧹" }
+                ]
+            }
+        ];
+
+        const gameBoard = document.getElementById('gameBoard');
+        const progressFill = document.getElementById('progressFill');
+        const activityLog = document.getElementById('activityLog');
+        const winScreen = document.getElementById('winScreen');
+
+        // Reaction texts for visual feedback instead of points
+        const reactions = ["Excellent Optics!", "Highly Visible!", "Board Approved!", "Sir Yes Sir!", "Promotable!"];
+
+        function initGame() {
+            gameBoard.innerHTML = '';
+            
+            actionCategories.forEach((category, catIndex) => {
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                section.style.animation = `fadeIn 0.5s ease-in ${catIndex * 0.2}s both`;
+                
+                const title = document.createElement('h2');
+                title.className = 'category-title';
+                title.innerText = category.name;
+                section.appendChild(title);
+
+                const grid = document.createElement('div');
+                grid.className = 'grid';
+
+                category.actions.forEach(action => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.onclick = (e) => takeAction(action, e, card);
+                    
+                    card.innerHTML = `
+                        <div class="card-emoji">${action.emoji}</div>
+                        <div class="card-title">${action.text}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                section.appendChild(grid);
+                gameBoard.appendChild(section);
+            });
+        }
+
+        function takeAction(action, event, cardElement) {
+            if (score >= targetScore || cardElement.classList.contains('clicked-card')) return;
+
+            // Apply spin out animation and disable card
+            cardElement.classList.add('clicked-card');
+
+            // Add points (hidden from user)
+            score += action.points;
+            if (score > targetScore) score = targetScore;
+            
+            // Update Progress Bar
+            progressFill.style.width = `${(score / targetScore) * 100}%`;
+            
+            // Visual feedback
+            const randomReaction = reactions[Math.floor(Math.random() * reactions.length)];
+            createFloatingReaction(action.emoji + " " + randomReaction, event.clientX, event.clientY);
+
+            // Update Log
+            logActivity(`Tim opted to: <strong>${action.text}</strong>. <em>(The board noticed...)</em>`);
+
+            // Check Win State
+            if (score >= targetScore) {
+                setTimeout(triggerWin, 800);
+            }
+
+            // Remove card from DOM after animation completes to keep board clean
+            setTimeout(() => {
+                cardElement.style.display = 'none';
+            }, 600);
+        }
+
+        function createFloatingReaction(text, x, y) {
+            const floatEl = document.createElement('div');
+            floatEl.className = 'floating-reaction';
+            floatEl.innerText = text;
+            
+            // Randomize color for fun
+            const colors = ['#E03C31', '#003666', '#28a745', '#D4AF37'];
+            floatEl.style.color = colors[Math.floor(Math.random() * colors.length)];
+            floatEl.style.textShadow = "2px 2px 4px white";
+            floatEl.style.fontWeight = "bold";
+
+            floatEl.style.left = `${x}px`;
+            floatEl.style.top = `${y}px`;
+            document.body.appendChild(floatEl);
+
+            setTimeout(() => {
+                floatEl.remove();
+            }, 1200);
+        }
+
+        function logActivity(message) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = message;
+            activityLog.prepend(entry);
+        }
+
+        function triggerWin() {
+            winScreen.style.display = 'flex';
+            // Exploding emojis for win
+            for(let i=0; i<40; i++) {
+                setTimeout(() => {
+                    createFloatingReaction('⭐', Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+                }, i * 50);
+            }
+        }
+
+        function resetGame() {
+            score = 0;
+            progressFill.style.width = `0%`;
+            activityLog.innerHTML = `<div class="log-entry" style="opacity: 1; transform: translateX(0);"><em>FITREP cycle reset. Time to start kissing up all over again...</em></div>`;
+            winScreen.style.display = 'none';
+            initGame(); // Re-render the board
+        }
+
+        // Start game on load
+        window.onload = initGame;
+    </script>
+</body>
+</html>
